@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\User;
+use App\Usuario;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
 class RegisterController extends Controller
 {
@@ -22,13 +25,6 @@ class RegisterController extends Controller
     */
 
     use RegistersUsers;
-
-    /**
-     * Where to redirect users after registration.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/home';
 
     /**
      * Create a new controller instance.
@@ -49,9 +45,9 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'nome' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:usuario'],
+            'senha' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
 
@@ -59,14 +55,29 @@ class RegisterController extends Controller
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
-     * @return \App\User
+     * @return \App\Usuario
      */
-    protected function create(array $data)
+    protected function create(Request $request)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        $data = $request->json()->all();
+
+        try {
+            return response(Usuario::create([
+                'nome' => $data['nome'],
+                'email' => $data['email'],
+                'senha' => Hash::make($data['senha']),
+                'api_token' => hash('sha256', Str::random(60)),
+            ]), 201);
+            
+            //TODO: Enviar confirmação de e-mail
+        }
+        catch(QueryException $e) {
+            if(strpos(strtolower($e->getMessage()), 'duplicate entry') !== false) {
+                abort(409, 'Usuário já cadastrado.');
+            }
+            else if(strpos(strtolower($e->getMessage()), 'cannot be null') !== false) {
+                abort(400, 'Verifique as informações e tente novamente.');
+            }
+        }
     }
 }

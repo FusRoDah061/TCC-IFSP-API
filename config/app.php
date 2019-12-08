@@ -174,6 +174,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        \App\Providers\HashIdModelProvider::class,
 
     ],
 
@@ -225,7 +226,34 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+        'Hashids' => Vinkla\Hashids\Facades\Hashids::class,
 
     ],
-
+    
+    /*
+     |--------------------------------------------------------------------------
+     | Configurações específicas da aplicação
+     |--------------------------------------------------------------------------
+     */
+    
+    'base_site_url' => env('BASE_SITE_URL', ''),
+    
+    // Quantidade de símbolos para exibir a cada busca
+    'pagination_size' => env('PAGINATION_SIZE', '70'), 
+    
+    // Diretório onde os símbolos criados por usuário é armazenado
+    'user_simbolos_path' => env('USER_SIMBOLOS_PATH', ''),
+    
+    'recaptcha_api' => env('RECAPTCHA_API', ''),
+    'recaptcha_secret' => env('RECAPTCHA_SECRET', ''),
+    
+    'gravatar_url' => env('GRAVATAR_URL', 'https://www.gravatar.com/avatar/'),
+    
+    // Configurações da customizadas aplicação
+    'simbolo_imagem' => env('SIMBOLO_IMAGEM', '1'),
+    'simbolo_video' => env('SIMBOLO_VIDEO', '2'),
+    'categoria_todos' => env('CATEGORIA_TODOS', 'all'),
+    'categoria_meus' => env('CATEGORIA_MEUS', 'user'),
+    'img_file_size_mb' => env('IMG_FILE_SIZE_MB', '5'),
+    'video_file_size_mb' => env('VIDEO_FILE_SIZE_MB', '50')
 ];

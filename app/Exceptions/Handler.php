@@ -4,6 +4,8 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Database\QueryException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -22,8 +24,8 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontFlash = [
-        'password',
-        'password_confirmation',
+        'senha',
+        'senha_confirmation',
     ];
 
     /**
@@ -46,6 +48,15 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        report($exception);
+        
+        if ($exception instanceof HttpException) {
+            return response()->json(['message' => $exception->getMessage()], $exception->getStatusCode());
+        }
+        else if ($exception instanceof QueryException) {
+            return response()->json(['message' => $exception->getMessage()], 500);
+        }
+
         return parent::render($request, $exception);
     }
 }

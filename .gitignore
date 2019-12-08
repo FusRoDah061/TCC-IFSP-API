@@ -1,5 +1,7 @@
 /node_modules
 /public/hot
+public/app
+public/app/*
 /public/storage
 /storage/*.key
 /vendor
@@ -8,3 +10,11 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
+.buildpath
+.project
+.settings/*
+storage/*
+*.phar
+Home/*
+Local/*
+*.bat
